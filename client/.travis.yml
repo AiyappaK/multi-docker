@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t aiyappa/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run aiyappa/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t aiyappa/multi-client ./client
+  - docker build -t aiyappa/multi-nginx ./nginx
+  - docker build -t aiyappa/multi-server ./server
+  - docker build -t aiyappa/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push aiyappa/multi-client
+  - docker push aiyappa/multi-nginx
+  - docker push aiyappa/multi-server
+  - docker push aiyappa/multi-worker
