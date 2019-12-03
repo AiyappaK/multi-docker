@@ -19,4 +19,3 @@ after_success:
   - docker push aiyappa/multi-client
   - docker push aiyappa/multi-nginx
   - docker push aiyappa/multi-server
-  - docker push aiyappa/multi-worker
